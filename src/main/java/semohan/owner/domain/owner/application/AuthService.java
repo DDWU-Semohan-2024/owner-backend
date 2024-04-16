@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.SignInDto;
@@ -21,7 +20,7 @@ public class AuthService {
         // TODO: 로그인 실패 처리
 
         // username으로 owner 가져오기
-        Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername()).get();
+        Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername()).orElseThrow();
 
         // 비밀번호 확인
         if(signInDto.getPassword().equals(owner.getPassword())) {

@@ -3,7 +3,6 @@ package semohan.owner.domain.restaurant.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.hibernate.annotations.NotFound;
 
 @Getter
 @Entity
