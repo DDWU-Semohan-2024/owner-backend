@@ -32,8 +32,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// swagger
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.8.0'
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.8.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
 	// jackson
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
