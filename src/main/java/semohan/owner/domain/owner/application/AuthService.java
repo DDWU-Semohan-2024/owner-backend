@@ -29,4 +29,32 @@ public class AuthService {
 
         return false;
     }
+
+    public String findUserName(String phoneNumber) {
+
+        // phoneNumber로 owner 가져오기
+        Owner owner = ownerRepository.findOwnerByPhoneNumber(phoneNumber).orElse(null);
+        if (owner == null) {
+            return "사용자를 찾을 수 없습니다. ";
+        } else return owner.getUsername();
+    }
+
+    public String resetPassword(String userName, String phoneNumber, String newPassword) {
+        // 아이디로 사용자 조회
+        Owner owner = ownerRepository.findOwnerByUsername(userName).orElse(null);
+
+        // 입력한 아이디로 찾은 owner의 휴대전화 번호와 입력한 휴대전화 번호가 일치하는지 확인
+        if (owner != null) {
+            if (owner.getPhoneNumber().equals(phoneNumber)) {
+                // 비밀번호 재설정
+                owner.setPassword(newPassword);
+                ownerRepository.save(owner);
+                return "비밀번호가 성공적으로 재설정되었습니다.";
+            } else {
+                return "아이디와 휴대전화 번호가 일치하는 사용자를 찾을 수 없습니다.";
+            }
+        } else {
+            return "해당 아이디로 등록된 사용자를 찾을 수 없습니다.";
+        }
+    }
 }
