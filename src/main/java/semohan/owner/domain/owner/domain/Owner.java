@@ -2,6 +2,7 @@ package semohan.owner.domain.owner.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 
@@ -16,12 +17,14 @@ public class Owner {
     @NotNull
     private String username;
 
+    @Setter
     @NotNull
     private String password;
 
     @NotNull
     private String name;
 
+    @Setter
     @NotNull
     private String phoneNumber;
 
