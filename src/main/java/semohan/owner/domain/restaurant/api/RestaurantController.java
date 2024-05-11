@@ -3,9 +3,8 @@ package semohan.owner.domain.restaurant.api;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import semohan.owner.domain.restaurant.application.RestaurantService;
 import semohan.owner.domain.restaurant.dto.RestaurantInfoDto;
 
@@ -16,10 +15,16 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping(value = "/info")
+    @GetMapping("/info")
     public ResponseEntity<RestaurantInfoDto> restaurantInfo(HttpServletRequest request) {
-        Long id = (Long) request.getSession().getAttribute("id");
+        long id = (Long) request.getSession().getAttribute("id");
         return ResponseEntity.ok(restaurantService.getRestaurantInfo(id));
     }
 
+    // TODO: RequestBody로 가져오면 login처럼 null값 가져옴...
+    @PostMapping("/updateInfo")
+    public ResponseEntity<Boolean> updateRestaurantInfo(HttpServletRequest request, @RequestBody RestaurantInfoDto restaurantInfoDto) {
+        long id = (Long) request.getSession().getAttribute("id");
+        return ResponseEntity.ok(restaurantService.updateRestaurantInfo(id, restaurantInfoDto));
+    }
 }

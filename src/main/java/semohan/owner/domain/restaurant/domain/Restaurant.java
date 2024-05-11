@@ -1,11 +1,15 @@
 package semohan.owner.domain.restaurant.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
+import semohan.owner.domain.restaurant.dto.RestaurantInfoDto;
 
 @Getter
+@Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

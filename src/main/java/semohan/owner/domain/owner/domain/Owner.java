@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 
 @Getter
+@Setter
 @Entity
 public class Owner {
 
@@ -17,14 +18,12 @@ public class Owner {
     @NotNull
     private String username;
 
-    @Setter
     @NotNull
     private String password;
 
     @NotNull
     private String name;
 
-    @Setter
     @NotNull
     private String phoneNumber;
 

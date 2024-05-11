@@ -1,17 +1,16 @@
 package semohan.owner.domain.restaurant.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import semohan.owner.domain.restaurant.domain.Address;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 
-@Builder
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantInfoDto {
+    private long id;
 
     @NotNull
     private String name;
@@ -21,13 +20,17 @@ public class RestaurantInfoDto {
 
     private String businessHours;
 
-    private String prices;
+    private String price;
 
     @NotNull
-    private String address;
+    private Address address;
 
     public static RestaurantInfoDto toDto (Restaurant entity) {
-        return new RestaurantInfoDto(entity.getName(), entity.getPhoneNumber(),
-                entity.getBusinessHours(), entity.getPrice(), entity.getAddress().getFullAddress());
+        return new RestaurantInfoDto(entity.getId(), entity.getName(), entity.getPhoneNumber(),
+                entity.getBusinessHours(), entity.getPrice(), entity.getAddress());
+    }
+
+    public Restaurant toEntity() {
+        return new Restaurant(this.id, this.name, this.phoneNumber, this.businessHours, this.price, this.address);
     }
 }
