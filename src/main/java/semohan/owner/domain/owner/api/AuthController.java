@@ -21,4 +21,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.signIn(signInDto, httpServletRequest));
     }
 
+    @PostMapping(value = "/sign-out")
+    public ResponseEntity<Boolean> signOut(HttpServletRequest httpServletRequest) {
+        httpServletRequest.getSession().invalidate();
+        return ResponseEntity.ok(true);
+    }
 }
