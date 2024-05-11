@@ -1,6 +1,7 @@
 package semohan.owner.domain.owner.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,9 @@ public class AuthController {
 
     @PostMapping(value = "/sign-in")
     public ResponseEntity<Boolean> signIn(@RequestBody SignInDto signInDto, HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(authService.signIn(signInDto, httpServletRequest));
+        HttpSession session = httpServletRequest.getSession(true);
+        session.setAttribute("id", authService.signIn(signInDto));
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping(value = "/sign-out")
