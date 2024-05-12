@@ -8,6 +8,9 @@ import semohan.owner.domain.owner.dto.ResetPasswordRequestDto;
 import semohan.owner.domain.owner.dto.SignInDto;
 import semohan.owner.domain.owner.repository.OwnerEditRepository;
 import semohan.owner.domain.owner.repository.OwnerRepository;
+import semohan.owner.global.exception.CustomException;
+
+import static semohan.owner.global.exception.ErrorCode.INVALID_MEMBER;
 
 @Slf4j
 @Service
@@ -23,7 +26,7 @@ public class AuthService {
 
         // 비밀번호 확인
         if(!signInDto.getPassword().equals(owner.getPassword())) {
-            // TODO: 예외처리
+            throw new CustomException(INVALID_MEMBER);
         }
         return owner.getId();
     }
