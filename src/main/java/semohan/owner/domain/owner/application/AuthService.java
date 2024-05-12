@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.ResetPasswordRequestDto;
 import semohan.owner.domain.owner.dto.SignInDto;
-import semohan.owner.domain.owner.repository.OwnerEditRepository;
 import semohan.owner.domain.owner.repository.OwnerRepository;
 
 @Slf4j
@@ -15,7 +14,6 @@ import semohan.owner.domain.owner.repository.OwnerRepository;
 public class AuthService {
 
     private final OwnerRepository ownerRepository;
-    private final OwnerEditRepository ownerEditRepository;
 
     public long signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
@@ -44,7 +42,7 @@ public class AuthService {
         if (owner != null) {
             if (owner.getPhoneNumber().equals(request.getPhoneNumber())) {
                 // 비밀번호 재설정
-                ownerEditRepository.resetPassword(owner, request.getPassword());
+                owner.setPassword(request.getPassword());
                 ownerRepository.save(owner); // 변경된 비밀번호 저장
                 return true; // 비밀번호 변경 성공
             }
