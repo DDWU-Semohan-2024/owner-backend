@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.OwnerDto;
 import semohan.owner.domain.owner.dto.OwnerEditDto;
-import semohan.owner.domain.owner.repository.OwnerEditRepository;
 import semohan.owner.domain.owner.repository.OwnerRepository;
 
 @Slf4j
@@ -16,7 +15,6 @@ import semohan.owner.domain.owner.repository.OwnerRepository;
 public class OwnerService {
 
     private final OwnerRepository ownerRepository;
-    private final OwnerEditRepository ownerEditRepository;
 
     public OwnerDto getOwnerInfo(long id) {
         return OwnerDto.toDto(ownerRepository.findOwnerById(id).orElseThrow());
