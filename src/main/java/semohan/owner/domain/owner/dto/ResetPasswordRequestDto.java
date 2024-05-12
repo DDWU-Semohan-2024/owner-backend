@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ResetPasswordRequest {
+public class ResetPasswordRequestDto {
     @NotNull
     private String username;
 

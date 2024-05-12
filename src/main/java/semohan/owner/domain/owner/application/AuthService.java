@@ -1,12 +1,10 @@
 package semohan.owner.domain.owner.application;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
-import semohan.owner.domain.owner.dto.ResetPasswordRequest;
+import semohan.owner.domain.owner.dto.ResetPasswordRequestDto;
 import semohan.owner.domain.owner.dto.SignInDto;
 import semohan.owner.domain.owner.repository.OwnerEditRepository;
 import semohan.owner.domain.owner.repository.OwnerRepository;
@@ -19,29 +17,26 @@ public class AuthService {
     private final OwnerRepository ownerRepository;
     private final OwnerEditRepository ownerEditRepository;
 
-    public boolean signIn(SignInDto signInDto, HttpServletRequest httpServletRequest) {
+    public long signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
         Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername()).orElseThrow();
 
         // 비밀번호 확인
-        if(signInDto.getPassword().equals(owner.getPassword())) {
-            HttpSession session = httpServletRequest.getSession(true);
-            session.setAttribute("id", owner.getId());
-            return true;
+        if(!signInDto.getPassword().equals(owner.getPassword())) {
+            // TODO: 예외처리
         }
-
-        return false;
+        return owner.getId();
     }
 
     public String findUserName(String phoneNumber) {
         // phoneNumber로 owner 가져오기
-        Owner owner = ownerRepository.findOwnerByPhoneNumber(phoneNumber).orElse(null);
+        Owner owner = (Owner) ownerRepository.findOwnerByPhoneNumber(phoneNumber).orElse(null);
         if (owner == null) {
             return "사용자를 찾을 수 없습니다. ";
         } else return owner.getUsername();
     }
 
-    public boolean resetPassword(ResetPasswordRequest request) {
+    public boolean resetPassword(ResetPasswordRequestDto request) {
         // 아이디로 사용자 조회
         Owner owner = ownerRepository.findOwnerByUsername(request.getUsername()).orElse(null);
 
