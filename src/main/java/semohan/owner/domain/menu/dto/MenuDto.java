@@ -1,6 +1,7 @@
 package semohan.owner.domain.menu.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,9 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 public class MenuDto {
     @NotNull
+    @Size(min = 1, max = 2)
     private List<String> main_menu;
 
     @NotNull
+    @Size(min = 1, max = 10)
     private List<String> sub_menu;
 
     @NotNull
