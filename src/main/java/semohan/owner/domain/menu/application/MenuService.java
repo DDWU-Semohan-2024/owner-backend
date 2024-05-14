@@ -24,7 +24,12 @@ public class MenuService {
     }
 
     public boolean updateMenu(Long id, MenuDto menuDto) {
-        menuRepository.save(convertToEntity(menuDto));
+        Menu menu = menuRepository.findMenuById(id).orElseThrow();
+        menu.setMain_menu(menuDto.getMain_menu());
+        menu.setSub_menu(menuDto.getSub_menu());
+        menu.setMeal_type(menuDto.getMeal_type());
+        menu.setMeal_date(menuDto.getMeal_date());
+        menuRepository.save(menu);
         return true;
     }
 
