@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OwnerUpdateDto {
+    @Length(max = 30, message = "비밀번호는 최대 30자까지 입력 가능합니다.")
     private String password;
     private String repeatedPassword;
 
