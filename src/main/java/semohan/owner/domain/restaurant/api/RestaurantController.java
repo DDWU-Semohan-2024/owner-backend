@@ -21,7 +21,6 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getRestaurantInfo(id));
     }
 
-    // TODO: RequestBody로 가져오면 login처럼 null값 가져옴...
     @PostMapping("/updateInfo")
     public ResponseEntity<Boolean> updateRestaurantInfo(HttpServletRequest request, @RequestBody RestaurantInfoDto restaurantInfoDto) {
         long id = (Long) request.getSession().getAttribute("id");
