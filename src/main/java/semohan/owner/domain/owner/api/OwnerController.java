@@ -7,16 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import semohan.owner.domain.owner.application.OwnerService;
 import semohan.owner.domain.owner.dto.OwnerDto;
 import semohan.owner.domain.owner.dto.OwnerUpdateDto;
 import semohan.owner.global.exception.CustomException;
 import semohan.owner.global.exception.ErrorCode;
-import semohan.owner.global.exception.ErrorResponseDto;
 
-import java.util.HashMap;
 
 @Slf4j
 @RestController

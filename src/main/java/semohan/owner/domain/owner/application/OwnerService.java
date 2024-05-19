@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.OwnerDto;
 import semohan.owner.domain.owner.dto.OwnerUpdateDto;
