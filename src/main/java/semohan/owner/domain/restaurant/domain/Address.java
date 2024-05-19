@@ -1,8 +1,11 @@
 package semohan.owner.domain.restaurant.domain;
 
 import jakarta.persistence.Embeddable;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 @Embeddable
 public class Address {
@@ -15,5 +18,12 @@ public class Address {
 
     public String getFullAddress() {
         return address + detailedAddress;
+    }
+
+    @Builder
+    public Address(String postCode, String address, String detailedAddress) {
+        this.postCode = postCode;
+        this.address = address;
+        this.detailedAddress = detailedAddress;
     }
 }

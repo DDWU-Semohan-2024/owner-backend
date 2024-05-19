@@ -3,7 +3,7 @@ package semohan.owner.domain.restaurant.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import semohan.owner.domain.restaurant.domain.Address;
-import semohan.owner.domain.restaurant.domain.Image;
+import semohan.owner.global.s3.Image;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 
 
@@ -24,16 +24,12 @@ public class RestaurantInfoDto {
     private String price;
 
     @NotNull
-    private Address address;
+    private String address;
 
     private Image image;
 
     public static RestaurantInfoDto toDto (Restaurant entity) {
         return new RestaurantInfoDto(entity.getId(), entity.getName(), entity.getPhoneNumber(),
-                entity.getBusinessHours(), entity.getPrice(), entity.getAddress(), entity.getImage());
-    }
-
-    public Restaurant toEntity() {
-        return new Restaurant(this.id, this.name, this.phoneNumber, this.businessHours, this.price, this.address, this.image);
+                entity.getBusinessHours(), entity.getPrice(), entity.getAddress().getFullAddress(), entity.getImage());
     }
 }

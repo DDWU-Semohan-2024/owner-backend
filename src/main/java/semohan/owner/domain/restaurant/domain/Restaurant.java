@@ -3,6 +3,7 @@ package semohan.owner.domain.restaurant.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
+import semohan.owner.global.s3.Image;
 
 @Data
 @Entity
