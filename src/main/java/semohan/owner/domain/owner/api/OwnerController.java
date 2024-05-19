@@ -38,7 +38,7 @@ public class OwnerController {
             throw new CustomException(ErrorCode.INVALID_FORM_DATA, bindingResult.getFieldErrors().get(0).getDefaultMessage());
         } else {
             Long id = (Long) session.getAttribute("id");
-            return ResponseEntity.ok(ownerService.updateOwnerInfo(id, ownerUpdateDto, bindingResult));
+            return ResponseEntity.ok(ownerService.updateOwnerInfo(id, ownerUpdateDto));
         }
     }
 }

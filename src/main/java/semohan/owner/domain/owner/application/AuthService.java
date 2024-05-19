@@ -34,7 +34,9 @@ public class AuthService {
         Owner owner = (Owner) ownerRepository.findOwnerByPhoneNumber(phoneNumber).orElse(null);
         if (owner == null) {
             return "사용자를 찾을 수 없습니다. ";
-        } else return owner.getUsername();
+        } else {
+            return owner.getUsername();
+        }
     }
 
     public boolean resetPassword(ResetPasswordRequestDto request) {
@@ -50,6 +52,6 @@ public class AuthService {
                 return true; // 비밀번호 변경 성공
             }
         }
-            return false;   // 변경 실패
+        return false;   // 변경 실패
     }
 }
