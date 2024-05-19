@@ -25,10 +25,10 @@ public class MenuService {
 
     public boolean updateMenu(Long id, MenuDto menuDto) {
         Menu menu = menuRepository.findMenuById(id).orElseThrow();
-        menu.setMain_menu(menuDto.getMain_menu());
-        menu.setSub_menu(menuDto.getSub_menu());
-        menu.setMeal_type(menuDto.getMeal_type());
-        menu.setMeal_date(menuDto.getMeal_date());
+        menu.setMainMenu(menuDto.getMainMenuAsString());
+        menu.setSubMenu(menuDto.getSubMenuAsString());
+        menu.setMealType(menuDto.getMealType());
+        menu.setMealDate(menuDto.getMealDate());
         menuRepository.save(menu);
         return true;
     }
@@ -40,11 +40,11 @@ public class MenuService {
 
     private Menu convertToEntity(MenuDto menuDto) {
         return Menu.builder()
-                .main_menu(menuDto.getMain_menu())
-                .sub_menu(menuDto.getSub_menu())
-                .meal_type(menuDto.getMeal_type())
+                .mainMenu(menuDto.getMainMenuAsString())
+                .subMenu(menuDto.getSubMenuAsString())
+                .mealType(menuDto.getMealType())
                 .restaurant(menuDto.getRestaurant())
-                .meal_date(menuDto.getMeal_date())
+                .mealDate(menuDto.getMealDate())
                 .build();
     }
 }

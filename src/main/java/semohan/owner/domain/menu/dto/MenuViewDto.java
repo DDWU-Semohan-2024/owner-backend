@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import semohan.owner.domain.menu.domain.Menu;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Builder
@@ -13,11 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuViewDto {
-    private List<String> main_menu;
 
-    private List<String> sub_menu;
+    private List<String> mainMenu;
 
-    public static MenuViewDto toDto (Menu entity) {
-        return new MenuViewDto(entity.getMain_menu(), entity.getSub_menu());
+    private List<String> subMenu;
+
+    // mainMenu와 subMenu를 리스트로 반환
+    public static MenuViewDto toDto(Menu entity) {
+        return MenuViewDto.builder()
+                .mainMenu(Arrays.asList(entity.getMainMenu().split("\\|")))
+                .subMenu(Arrays.asList(entity.getSubMenu().split("\\|")))
+                .build();
     }
 }

@@ -1,13 +1,11 @@
 package semohan.owner.domain.menu.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @Getter
@@ -21,20 +19,16 @@ public class Menu {
     private long id;
 
     @NotNull
-    private Date meal_date;
+    private Date mealDate;
 
     @NotNull
-    @Size(min = 1, max = 2)
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> main_menu;
+    private String mainMenu; // '|'로 구분된 문자열
 
     @NotNull
-    @Size(min = 1, max = 10)
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> sub_menu;
+    private String subMenu; // '|'로 구분된 문자열
 
     @NotNull
-    private int meal_type;
+    private int mealType;
 
     @NotNull
     @ManyToOne

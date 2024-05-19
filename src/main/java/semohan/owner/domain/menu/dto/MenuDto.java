@@ -16,20 +16,31 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuDto {
+
     @NotNull
     @Size(min = 1, max = 2)
-    private List<String> main_menu;
+    private List<String> mainMenu;
 
     @NotNull
     @Size(min = 1, max = 10)
-    private List<String> sub_menu;
+    private List<String> subMenu;
 
     @NotNull
-    private int meal_type;
+    private int mealType;
 
     @NotNull
     private Restaurant restaurant;
 
     @NotNull
-    private Date meal_date;
+    private Date mealDate;
+
+    // mainMnu를 '|'로 구분된 문자열로 반환
+    public String getMainMenuAsString() {
+        return String.join("|", mainMenu);
+    }
+
+    // subMenu를 '|'로 구분된 문자열로 반환
+    public String getSubMenuAsString() {
+        return String.join("|", subMenu);
+    }
 }
