@@ -2,7 +2,6 @@ package semohan.owner.domain.restaurant.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import semohan.owner.domain.restaurant.domain.Address;
 import semohan.owner.global.s3.Image;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 

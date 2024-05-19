@@ -2,7 +2,6 @@ package semohan.owner.domain.restaurant.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import semohan.owner.domain.restaurant.domain.Address;
 
 @Data
 public class RestaurantInfoUpdateDto {
