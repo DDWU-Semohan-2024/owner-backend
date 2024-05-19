@@ -3,10 +3,9 @@ package semohan.owner.domain.restaurant.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
-import semohan.owner.domain.restaurant.dto.RestaurantInfoDto;
+import semohan.owner.global.s3.Image;
 
-@Getter
-@Setter
+@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,4 +29,8 @@ public class Restaurant {
     @NotNull
     @Embedded
     private Address address;
+
+    @ManyToOne
+    @JoinColumn(name="image")
+    private Image image;
 }

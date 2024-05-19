@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import semohan.owner.domain.owner.application.OwnerService;
 import semohan.owner.domain.owner.dto.OwnerDto;
-import semohan.owner.domain.owner.dto.OwnerEditDto;
+import semohan.owner.domain.owner.dto.OwnerUpdateDto;
 
 @Slf4j
 @RestController
@@ -26,8 +26,8 @@ public class OwnerController {
     }
 
     @PostMapping("/edit-info")
-    public ResponseEntity<Boolean> updateOwnerInfo(HttpSession session, @RequestBody @Validated OwnerEditDto ownerEditDto) {
+    public ResponseEntity<Boolean> updateOwnerInfo(HttpSession session, @RequestBody @Validated OwnerUpdateDto ownerUpdateDto) {
         Long id = (Long) session.getAttribute("id");
-        return ResponseEntity.ok(ownerService.updateOwnerInfo(id, ownerEditDto));
+        return ResponseEntity.ok(ownerService.updateOwnerInfo(id, ownerUpdateDto));
     }
 }

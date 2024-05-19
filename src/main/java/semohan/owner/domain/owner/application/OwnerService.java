@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.OwnerDto;
-import semohan.owner.domain.owner.dto.OwnerEditDto;
+import semohan.owner.domain.owner.dto.OwnerUpdateDto;
 import semohan.owner.domain.owner.repository.OwnerRepository;
 
 @Slf4j
@@ -21,16 +21,16 @@ public class OwnerService {
     }
 
     @Transactional
-    public boolean updateOwnerInfo(Long id, OwnerEditDto ownerEditDto) {
+    public boolean updateOwnerInfo(Long id, OwnerUpdateDto ownerUpdateDto) {
         // id로 owner 가져오기
         Owner owner = ownerRepository.findOwnerById(id).orElseThrow();
 
         // entity에 변경된 핸드폰 번호 set
-        owner.setPhoneNumber(ownerEditDto.getPhoneNumber());
+        owner.setPhoneNumber(ownerUpdateDto.getPhoneNumber());
 
         // entity에 변경된 비밀번호 set
-        if(ownerEditDto.getPassword().equals(ownerEditDto.getNewPassword())) {
-            owner.setPassword(ownerEditDto.getPassword());
+        if(ownerUpdateDto.getPassword().equals(ownerUpdateDto.getNewPassword())) {
+            owner.setPassword(ownerUpdateDto.getPassword());
         }
 
         return true;

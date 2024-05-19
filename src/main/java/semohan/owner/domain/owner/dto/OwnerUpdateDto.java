@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OwnerEditDto {
+public class OwnerUpdateDto {
     @NotNull
     private String password;
 
