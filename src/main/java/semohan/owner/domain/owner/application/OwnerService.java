@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.OwnerDto;
 import semohan.owner.domain.owner.dto.OwnerUpdateDto;
@@ -21,7 +22,8 @@ public class OwnerService {
     }
 
     @Transactional
-    public boolean updateOwnerInfo(Long id, OwnerUpdateDto ownerUpdateDto) {
+    public boolean updateOwnerInfo(Long id, OwnerUpdateDto ownerUpdateDto, BindingResult bindingResult) {
+
         // id로 owner 가져오기
         Owner owner = ownerRepository.findOwnerById(id).orElseThrow();
 
@@ -29,7 +31,7 @@ public class OwnerService {
         owner.setPhoneNumber(ownerUpdateDto.getPhoneNumber());
 
         // entity에 변경된 비밀번호 set
-        if(ownerUpdateDto.getPassword().equals(ownerUpdateDto.getNewPassword())) {
+        if(ownerUpdateDto.getPassword().equals(ownerUpdateDto.getRepeatedPassword())) {
             owner.setPassword(ownerUpdateDto.getPassword());
         }
 
