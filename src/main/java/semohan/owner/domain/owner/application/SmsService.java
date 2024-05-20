@@ -1,0 +1,39 @@
+package semohan.owner.domain.owner.application;
+
+import jakarta.annotation.PostConstruct;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SmsService {
+
+    @Value("${coolsms.api.key}")
+    private String apiKey;
+    @Value("${coolsms.api.secret}")
+    private String apiSecretKey;
+
+    private DefaultMessageService messageService;
+
+    @PostConstruct
+    private void init(){
+        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, "https://api.coolsms.co.kr");
+    }
+
+    // 인증 번호 메시지 발송
+    public SingleMessageSentResponse sendOne(String to, String verificationCode) {
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        String senderNumber = "01073728895";
+        message.setFrom(senderNumber);
+        message.setTo(to);
+        message.setText("[세모한] 아래의 인증번호를 입력해주세요\n" + verificationCode);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+}

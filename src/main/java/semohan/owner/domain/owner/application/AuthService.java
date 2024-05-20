@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.ResetPasswordRequestDto;
 import semohan.owner.domain.owner.dto.SignInDto;
+import semohan.owner.domain.owner.dto.SmsCertificationDto;
 import semohan.owner.domain.owner.repository.OwnerRepository;
 import semohan.owner.global.exception.CustomException;
 
-import static semohan.owner.global.exception.ErrorCode.INVALID_MEMBER;
+import static semohan.owner.global.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -17,6 +18,9 @@ import static semohan.owner.global.exception.ErrorCode.INVALID_MEMBER;
 public class AuthService {
 
     private final OwnerRepository ownerRepository;
+    private final SmsService smsService;
+    private final ValidationService validationService;
+    private final RedisService redisService;
 
     public long signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
@@ -29,13 +33,35 @@ public class AuthService {
         return owner.getId();
     }
 
-    public String findUserName(String phoneNumber) {
-        // phoneNumber로 owner 가져오기
-        Owner owner = (Owner) ownerRepository.findOwnerByPhoneNumber(phoneNumber).orElse(null);
-        if (owner == null) {
-            return "사용자를 찾을 수 없습니다. ";
+    public boolean sendSms(String phoneNumber) {
+        //수신번호 형태에 맞춰 "-"을 ""로 변환
+        String phoneNum = phoneNumber.replaceAll("-","");
+        String verificationCode = validationService.createCode();
+        smsService.sendOne(phoneNum, verificationCode);
+
+        //인증코드 유효기간 5분 설정
+        redisService.setDataExpire(phoneNumber, verificationCode, 60 * 5L);
+        return true;
+    }
+
+    public String verifySms(SmsCertificationDto request) {
+        // redis에 저장된 인증코드 꺼내오기
+        String verificationCode = redisService.getData(request.getPhoneNumber());
+
+        // 사용자 입력 코드랑 저장된 인증 코드랑 일치 확인
+        if (validationService.verifyCode(request.getVerificationCode(), verificationCode)) {
+            // phoneNumber로 owner 가져오기
+            Owner owner = ownerRepository.findOwnerByPhoneNumber(request.getPhoneNumber()).orElse(null);
+
+            // 일치 유저 없으면 예외
+            if (owner == null) {
+                throw new CustomException((MEMBER_NOT_FOUND));
+            } else {
+                redisService.deleteData(request.getPhoneNumber());
+                return owner.getUsername(); // 인증 코드 일치, 유저 있으면 redis 삭제 후 아이디 반환
+            }
         } else {
-            return owner.getUsername();
+            throw new CustomException((INCORRECT_VERIFICATION_CODE));
         }
     }
 
@@ -52,6 +78,6 @@ public class AuthService {
                 return true; // 비밀번호 변경 성공
             }
         }
-        return false;   // 변경 실패
+            return false;   // 변경 실패
     }
 }

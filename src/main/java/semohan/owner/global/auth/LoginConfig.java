@@ -12,6 +12,9 @@ public class LoginConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginCheckInterceptor()) // LogInterceptor 등록
                 .order(1)    // 적용할 필터 순서 설정
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/sign-in"); // 인터셉터에서 제외할 패턴
+                .excludePathPatterns("/auth/sign-in")   // 인터셉터에서 제외할 패턴
+                .excludePathPatterns("/auth/find-id/send")
+                .excludePathPatterns("/auth/find-id/confirm")
+                .excludePathPatterns("/auth/reset-password");
     }
 }
