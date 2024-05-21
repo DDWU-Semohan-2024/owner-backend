@@ -120,6 +120,7 @@ public class AuthService {
                 //수신번호 형태에 맞춰 "-"을 ""로 변환
                 String phoneNumberWithoutDashes = request.getPhoneNumber().replaceAll("-","");
                 smsService.sendTemporaryPassword(phoneNumberWithoutDashes, tempPassword);
+                redisService.deleteData(request.getPhoneNumber());  // redis 저장 데이터 삭제
                 return true; // 임시 비밀번호 문자 전송 성공
             } else {
                 throw new CustomException(MISMATCH_PHONENUMBER);    // 저장된 폰번호와 입력된 폰번호 불일치
