@@ -16,6 +16,8 @@ public class SmsService {
     private String apiKey;
     @Value("${coolsms.api.secret}")
     private String apiSecretKey;
+    @Value("${sms.senderNumber}")
+    String senderNumber;
 
     private DefaultMessageService messageService;
 
@@ -28,7 +30,6 @@ public class SmsService {
     public SingleMessageSentResponse sendOne(String to, String verificationCode) {
         Message message = new Message();
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
-        String senderNumber = "01073728895";
         message.setFrom(senderNumber);
         message.setTo(to);
         message.setText("[세모한] 아래의 인증번호를 입력해주세요\n" + verificationCode);
