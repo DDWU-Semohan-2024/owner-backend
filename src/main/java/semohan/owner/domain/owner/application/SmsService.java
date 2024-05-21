@@ -43,7 +43,7 @@ public class SmsService {
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
         message.setFrom(senderNumber);
         message.setTo(to);
-        message.setText("임시 비밀번호가 발급되었습니다.\n" + verificationCode);
+        message.setText("[세모한] 임시 비밀번호가 발급되었습니다.\n" + verificationCode);
 
         return this.messageService.sendOne(new SingleMessageSendingRequest(message));
     }
