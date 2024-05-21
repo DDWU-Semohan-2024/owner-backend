@@ -8,9 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import semohan.owner.domain.owner.application.AuthService;
-import semohan.owner.domain.owner.dto.ResetPasswordRequestDto;
+import semohan.owner.domain.owner.dto.TemporaryPasswordRequestDto;
 import semohan.owner.domain.owner.dto.SignInDto;
-import semohan.owner.domain.owner.dto.SmsCertificationDto;
+import semohan.owner.domain.owner.dto.FindIdVerificationDto;
+import semohan.owner.domain.owner.dto.TemporaryPasswordVerificationDto;
 
 @Slf4j
 @RestController
@@ -34,17 +35,22 @@ public class AuthController {
     }
 
     @PostMapping(value = "/find-id/send")
-    public ResponseEntity<Boolean> sendSms(@RequestParam("phoneNumber") String phoneNumber) {
-        return ResponseEntity.ok(authService.sendSms(phoneNumber));
+    public ResponseEntity<Boolean> sendSmsForFindId(@RequestParam("phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok(authService.sendVerifySms(phoneNumber));
     }
 
     @PostMapping(value = "/find-id/confirm")
-    public ResponseEntity<String> verifySms(@RequestBody @Validated SmsCertificationDto request) {
+    public ResponseEntity<String> verifySmsForFindId(@RequestBody @Validated FindIdVerificationDto request) {
         return ResponseEntity.ok(authService.verifySms(request));
     }
 
-    @PostMapping(value="/reset-password")
-    public ResponseEntity<Boolean> resetPassword(@RequestBody @Validated ResetPasswordRequestDto request) {
-        return ResponseEntity.ok(authService.resetPassword(request));
+    @PostMapping(value="/request-temporary-password/send")
+    public ResponseEntity<Boolean> sendSmsForResetPassword(@RequestBody @Validated TemporaryPasswordRequestDto request) {
+        return ResponseEntity.ok(authService.sendSmsForResetPassword(request));
+    }
+
+    @PostMapping(value="/request-temporary-password/confirm")
+    public ResponseEntity<Boolean> sendTempPassword(@RequestBody @Validated TemporaryPasswordVerificationDto request) {
+        return ResponseEntity.ok(authService.sendTempPassword(request));
     }
 }

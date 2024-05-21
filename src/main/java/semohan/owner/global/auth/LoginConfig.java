@@ -15,6 +15,7 @@ public class LoginConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/auth/sign-in")   // 인터셉터에서 제외할 패턴
                 .excludePathPatterns("/auth/find-id/send")
                 .excludePathPatterns("/auth/find-id/confirm")
-                .excludePathPatterns("/auth/reset-password");
+                .excludePathPatterns("/auth/request-temporary-password/send")
+                .excludePathPatterns("/auth/request-temporary-password/confirm");
     }
 }

@@ -27,14 +27,24 @@ public class SmsService {
     }
 
     // 인증 번호 메시지 발송
-    public SingleMessageSentResponse sendOne(String to, String verificationCode) {
+    public SingleMessageSentResponse sendVerifySms(String to, String verificationCode) {
         Message message = new Message();
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
         message.setFrom(senderNumber);
         message.setTo(to);
-        message.setText("[세모한] 아래의 인증번호를 입력해주세요\n" + verificationCode);
+        message.setText("[세모한] 아래의 인증번호를 입력해주세요.\n" + verificationCode);
 
         return this.messageService.sendOne(new SingleMessageSendingRequest(message));
     }
 
+    // 임시 비밀번호 sms 전송
+    public SingleMessageSentResponse sendTemporaryPassword(String to, String verificationCode) {
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom(senderNumber);
+        message.setTo(to);
+        message.setText("임시 비밀번호가 발급되었습니다.\n" + verificationCode);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
 }
