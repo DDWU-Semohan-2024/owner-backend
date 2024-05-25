@@ -20,7 +20,9 @@ public class AuthService {
 
     public long signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
-        Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername()).orElseThrow();
+        Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername())
+                .orElseThrow(() -> new CustomException(INVALID_MEMBER));
+
 
         // 비밀번호 확인
         if(!signInDto.getPassword().equals(owner.getPassword())) {
@@ -28,6 +30,7 @@ public class AuthService {
         }
         return owner.getId();
     }
+
 
     public String findUserName(String phoneNumber) {
         // phoneNumber로 owner 가져오기
