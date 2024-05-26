@@ -4,13 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import semohan.owner.domain.owner.application.AuthService;
-import semohan.owner.domain.owner.dto.ResetPasswordRequestDto;
+import semohan.owner.domain.owner.dto.TemporaryPasswordRequestDto;
 import semohan.owner.domain.owner.dto.SignInDto;
+import semohan.owner.domain.owner.dto.FindIdVerificationDto;
+import semohan.owner.domain.owner.dto.TemporaryPasswordVerificationDto;
 
 @Slf4j
 @RestController
@@ -33,20 +34,23 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping(value = "/find-id")
-    public ResponseEntity<String> findUserName(@RequestParam("phoneNumber") String phoneNumber) {
-        String userName = authService.findUserName(phoneNumber);
-        if (userName != null) {
-            // Owner가 존재하는 경우
-            return ResponseEntity.ok(userName);
-        } else {
-            // Owner가 존재하지 않는 경우
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자가 존재하지 않습니다.");
-        }
+    @PostMapping(value = "/find-id/send")
+    public ResponseEntity<Boolean> sendSmsForFindId(@RequestParam("phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok(authService.sendVerifySms(phoneNumber));
     }
 
-    @PostMapping(value="/reset-password")
-    public ResponseEntity<Boolean> resetPassword(@RequestBody @Validated ResetPasswordRequestDto request) {
-        return ResponseEntity.ok(authService.resetPassword(request));
+    @PostMapping(value = "/find-id/confirm")
+    public ResponseEntity<String> verifySmsForFindId(@RequestBody @Validated FindIdVerificationDto request) {
+        return ResponseEntity.ok(authService.verifySms(request));
+    }
+
+    @PostMapping(value="/request-temporary-password/send")
+    public ResponseEntity<Boolean> sendSmsForResetPassword(@RequestBody @Validated TemporaryPasswordRequestDto request) {
+        return ResponseEntity.ok(authService.sendSmsForResetPassword(request));
+    }
+
+    @PostMapping(value="/request-temporary-password/confirm")
+    public ResponseEntity<Boolean> sendTempPassword(@RequestBody @Validated TemporaryPasswordVerificationDto request) {
+        return ResponseEntity.ok(authService.sendTempPassword(request));
     }
 }
