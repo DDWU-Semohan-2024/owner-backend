@@ -25,7 +25,9 @@ public class AuthService {
 
     public long signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
-        Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername()).orElseThrow();
+        Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername())
+                .orElseThrow(() -> new CustomException(INVALID_MEMBER));
+
 
         // 비밀번호 확인
         if(!signInDto.getPassword().equals(owner.getPassword())) {
@@ -66,21 +68,6 @@ public class AuthService {
         }
     }
 
-//    public boolean resetPassword(TemporaryPasswordRequestDto request) {
-//        // 아이디로 사용자 조회
-//        Owner owner = ownerRepository.findOwnerByUsername(request.getUsername()).orElse(null);
-//
-//        // 입력한 아이디로 찾은 owner의 휴대전화 번호와 입력한 휴대전화 번호가 일치하는지 확인
-//        if (owner != null) {
-//            if (owner.getPhoneNumber().equals(request.getPhoneNumber())) {
-//                // 비밀번호 재설정
-//                owner.setPassword(request.getPassword());
-//                ownerRepository.save(owner); // 변경된 비밀번호 저장
-//                return true; // 비밀번호 변경 성공
-//            }
-//        }
-//            return false;   // 변경 실패
-//    }
 
     public boolean sendSmsForResetPassword(TemporaryPasswordRequestDto request) {
         // 아이디로 사용자 조회
