@@ -2,6 +2,7 @@ package semohan.owner.domain.owner.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,9 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
+    @Validated
     @PostMapping(value = "/find-id/send")
-    public ResponseEntity<Boolean> sendSmsForFindId(@RequestParam("phoneNumber") String phoneNumber) {
+    public ResponseEntity<Boolean> sendSmsForFindId(@RequestParam("phoneNumber") @Pattern(regexp= "\\d{3}-\\d{4}-\\d{4}") String phoneNumber) {
         return ResponseEntity.ok(authService.sendVerifySms(phoneNumber));
     }
 
