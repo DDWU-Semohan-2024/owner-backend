@@ -1,6 +1,8 @@
 package semohan.owner.domain.owner.api;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +33,12 @@ public class AuthController {
     @PostMapping(value = "/sign-out")
     public ResponseEntity<Boolean> signOut(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().invalidate();
+        log.info("로그아웃 완료");
         return ResponseEntity.ok(true);
     }
 
     @PostMapping(value = "/find-id/send")
-    public ResponseEntity<Boolean> sendSmsForFindId(@RequestParam("phoneNumber") String phoneNumber) {
+    public ResponseEntity<Boolean> sendSmsForFindId(@RequestBody String phoneNumber) {
         return ResponseEntity.ok(authService.sendVerifySms(phoneNumber));
     }
 
