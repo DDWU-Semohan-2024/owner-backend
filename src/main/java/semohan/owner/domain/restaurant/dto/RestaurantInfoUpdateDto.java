@@ -21,4 +21,5 @@ public class RestaurantInfoUpdateDto {
     private String address;
 
     private String detailedAddress;
+
 }
