@@ -1,29 +1,15 @@
 package semohan.owner.domain.menu.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import semohan.owner.domain.menu.domain.Menu;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-@Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class MenuViewDto {
 
-    private List<String> mainMenu;
+    private List<MenuResponseDto> menuList;
 
-    private List<String> subMenu;
-
-    // mainMenu와 subMenu를 리스트로 반환
-    public static MenuViewDto toDto(Menu entity) {
-        return MenuViewDto.builder()
-                .mainMenu(Arrays.asList(entity.getMainMenu().split("\\|")))
-                .subMenu(Arrays.asList(entity.getSubMenu().split("\\|")))
-                .build();
-    }
 }
