@@ -19,6 +19,7 @@ public class Menu {
     private long id;
 
     @NotNull
+    @Temporal(TemporalType.DATE)    // 시간 정보 없이 날짜만 저장
     private Date mealDate;
 
     @NotNull
