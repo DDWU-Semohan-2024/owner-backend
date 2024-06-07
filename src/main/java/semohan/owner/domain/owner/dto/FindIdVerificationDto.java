@@ -1,13 +1,11 @@
 package semohan.owner.domain.owner.dto;
 
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 @Builder
 @Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindIdVerificationDto {

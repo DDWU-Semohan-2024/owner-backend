@@ -30,11 +30,11 @@ public class OwnerController {
     }
 
     @PostMapping("/edit-info")
-    public ResponseEntity<Boolean> updateOwnerInfo(HttpSession session, @Valid @RequestBody OwnerUpdateDto ownerUpdateDto, BindingResult bindingResult) {
+    public ResponseEntity<Boolean> updateOwnerInfo(HttpServletRequest request, @Valid @RequestBody OwnerUpdateDto ownerUpdateDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(ErrorCode.INVALID_FORM_DATA, bindingResult.getFieldErrors().get(0).getDefaultMessage());
         } else {
-            Long id = (Long) session.getAttribute("id");
+            Long id = (Long) request.getSession().getAttribute("id");
             return ResponseEntity.ok(ownerService.updateOwnerInfo(id, ownerUpdateDto));
         }
     }

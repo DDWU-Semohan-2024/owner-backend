@@ -32,27 +32,29 @@ public class AuthController {
     @PostMapping(value = "/sign-out")
     public ResponseEntity<Boolean> signOut(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().invalidate();
+        log.info("로그아웃 완료");
         return ResponseEntity.ok(true);
     }
 
-    @Validated
     @PostMapping(value = "/find-id/send")
-    public ResponseEntity<Boolean> sendSmsForFindId(@RequestParam("phoneNumber") @Pattern(regexp= "\\d{3}-\\d{4}-\\d{4}") String phoneNumber) {
+    public ResponseEntity<Boolean> sendSmsForFindId(@RequestBody @Pattern(regexp= "\\d{3}-\\d{4}-\\d{4}") String phoneNumber) {
+        log.info(phoneNumber);
         return ResponseEntity.ok(authService.sendVerifySms(phoneNumber));
     }
 
     @PostMapping(value = "/find-id/confirm")
-    public ResponseEntity<String> verifySmsForFindId(@RequestBody @Validated FindIdVerificationDto request) {
-        return ResponseEntity.ok(authService.verifySms(request));
+    public ResponseEntity<String> verifySmsForFindId(@RequestBody @Validated FindIdVerificationDto dto) {
+        log.info(dto.toString());
+        return ResponseEntity.ok(authService.verifySms(dto));
     }
 
     @PostMapping(value="/request-temporary-password/send")
-    public ResponseEntity<Boolean> sendSmsForResetPassword(@RequestBody @Validated TemporaryPasswordRequestDto request) {
-        return ResponseEntity.ok(authService.sendSmsForResetPassword(request));
+    public ResponseEntity<Boolean> sendSmsForResetPassword(@RequestBody @Validated TemporaryPasswordRequestDto dto) {
+        return ResponseEntity.ok(authService.sendSmsForResetPassword(dto));
     }
 
     @PostMapping(value="/request-temporary-password/confirm")
-    public ResponseEntity<Boolean> sendTempPassword(@RequestBody @Validated TemporaryPasswordVerificationDto request) {
-        return ResponseEntity.ok(authService.sendTempPassword(request));
+    public ResponseEntity<Boolean> sendTempPassword(@RequestBody @Validated TemporaryPasswordVerificationDto dto) {
+        return ResponseEntity.ok(authService.sendTempPassword(dto));
     }
 }

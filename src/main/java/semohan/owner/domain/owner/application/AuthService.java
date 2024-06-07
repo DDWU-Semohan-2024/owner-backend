@@ -61,8 +61,10 @@ public class AuthService {
                 throw new CustomException(MEMBER_NOT_FOUND);
             } else {
                 redisService.deleteData(request.getPhoneNumber());
+                log.info(owner.getUsername());
                 return owner.getUsername(); // 인증 코드 일치, 유저 있으면 redis 삭제 후 아이디 반환
             }
+
         } else {
             throw new CustomException(INCORRECT_VERIFICATION_CODE);
         }

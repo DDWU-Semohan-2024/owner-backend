@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuDto {
+public class MenuRequestDto {
 
     @NotNull
     @Size(min = 1, max = 2)
