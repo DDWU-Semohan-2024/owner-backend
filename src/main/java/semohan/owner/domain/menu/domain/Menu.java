@@ -32,6 +32,9 @@ public class Menu {
     private int mealType;
 
     @NotNull
+    private int likesMenu = 0;  // 좋아요 수
+
+    @NotNull
     @ManyToOne
     private Restaurant restaurant;
 }

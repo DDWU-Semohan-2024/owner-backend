@@ -30,6 +30,9 @@ public class Restaurant {
     @Embedded
     private Address address;
 
+    @NotNull
+    private int likesRestaurant = 0;  // 좋아요 수
+
     @ManyToOne
     @JoinColumn(name="image")
     private Image image;
