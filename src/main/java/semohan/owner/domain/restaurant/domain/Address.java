@@ -17,7 +17,7 @@ public class Address {
     private String detailedAddress;
 
     public String getFullAddress() {
-        return address + detailedAddress;
+        return address + " " + detailedAddress;
     }
 
     @Builder

@@ -19,6 +19,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         System.out.println("[interceptor] : " + requestURI);
         HttpSession session = request.getSession(false);
 
+        log.info(session == null ? "session null" : "sesseion 있음");
+        
         // 로그인 X
         if(session == null || session.getAttribute("id") == null) {
             throw new CustomException(UNAUTHORIZED_USER);
