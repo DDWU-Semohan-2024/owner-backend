@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import semohan.owner.domain.restaurant.domain.Restaurant;
 
 import java.util.Date;
 import java.util.List;
@@ -27,9 +26,6 @@ public class MenuRequestDto {
 
     @NotNull
     private int mealType;
-
-    @NotNull
-    private Restaurant restaurant;
 
     @NotNull
     private Date mealDate;
