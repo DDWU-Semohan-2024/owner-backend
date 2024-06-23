@@ -35,13 +35,16 @@ public class RestaurantService {
         Restaurant restaurant = restaurantRepository.findRestaurantById(resId).orElseThrow();
 
         restaurant.setPhoneNumber(dto.getPhoneNumber());
-        restaurant.setAddress(Address.builder()
-                .address(dto.getAddress())
-                .detailedAddress(dto.getDetailedAddress())
-                .postCode(dto.getPostCode())
-                .build());
         restaurant.setBusinessHours(dto.getBusinessHours());
         restaurant.setPrice(dto.getPrice());
+
+        if(dto.getAddress() != null && dto.getAddress() != "") {
+            restaurant.setAddress(Address.builder()
+                    .address(dto.getAddress())
+                    .detailedAddress(dto.getDetailedAddress())
+                    .postCode(dto.getPostCode())
+                    .build());
+        }
 
         // 이미지 업로드
         if(imageFile != null && !imageFile.isEmpty()){

@@ -29,14 +29,14 @@ public class OwnerService {
         Owner owner = ownerRepository.findOwnerById(id).orElseThrow();
 
         // entity에 변경된 비밀번호 set
-        if(ownerUpdateDto.getPassword().equals(ownerUpdateDto.getRepeatedPassword())) {
+        if(ownerUpdateDto.getPassword() != null && !ownerUpdateDto.getPassword().equals("")) {
             owner.setPassword(ownerUpdateDto.getPassword());
-        } else {
-            throw new CustomException(ErrorCode.INVALID_REPEATED_PASSWORD);
         }
 
         // entity에 변경된 핸드폰 번호 set
         owner.setPhoneNumber(ownerUpdateDto.getPhoneNumber());
+
+        ownerRepository.save(owner);
 
         return true;
     }

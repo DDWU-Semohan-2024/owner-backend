@@ -18,15 +18,21 @@ import java.util.List;
 public class MenuController {
     private final MenuService menuService;
 
-    @GetMapping(value = "/{weekIndex}")
+    @GetMapping(value = "/week/{weekIndex}")
     public ResponseEntity<List<MenuResponseDto>> getMenuView(HttpServletRequest request, @PathVariable("weekIndex") String index) {
-        long id = (Long) request.getSession().getAttribute("id");
-        return ResponseEntity.ok(menuService.getMenuList(id, Integer.parseInt(index)));
+        long ownerId = (Long) request.getSession().getAttribute("id");
+        return ResponseEntity.ok(menuService.getMenuList(ownerId, Integer.parseInt(index)));
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<MenuResponseDto> getMenu(@PathVariable("id") long id) {
+        return ResponseEntity.ok(menuService.getMenu(id));
     }
 
     @PostMapping(value = "/new-menu")
-    public ResponseEntity<Boolean> createMenu(@RequestBody @Validated MenuRequestDto menuDto) {
-        return ResponseEntity.ok(menuService.createMenu(menuDto));
+    public ResponseEntity<Boolean> createMenu(HttpServletRequest request, @RequestBody @Validated MenuRequestDto menuDto) {
+        long ownerId = (Long) request.getSession().getAttribute("id");
+        return ResponseEntity.ok(menuService.createMenu(menuDto, ownerId));
     }
 
     @PutMapping("/{id}")

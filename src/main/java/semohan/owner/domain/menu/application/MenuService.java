@@ -7,14 +7,16 @@ import semohan.owner.domain.menu.domain.Menu;
 import semohan.owner.domain.menu.dto.MenuRequestDto;
 import semohan.owner.domain.menu.dto.MenuResponseDto;
 import semohan.owner.domain.menu.repository.MenuRepository;
+import semohan.owner.domain.owner.repository.OwnerRepository;
 import semohan.owner.domain.restaurant.domain.Restaurant;
 import semohan.owner.domain.restaurant.repository.RestaurantRepository;
 import semohan.owner.global.exception.CustomException;
 import semohan.owner.global.exception.ErrorCode;
 
-import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final RestaurantRepository restaurantRepository;
+    private OwnerRepository ownerRepository;
 
     public MenuResponseDto getMenu(long id) {
         return MenuResponseDto.toDto(menuRepository.findMenuById(id).get());
@@ -37,25 +40,28 @@ public class MenuService {
     // 오늘: 0 / 전주: -1 / 다음주: 1
     public List<MenuResponseDto> getMenuList(long ownerId, int weekIndex) {
         Restaurant restaurant = restaurantRepository.findRestaurantById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_MEMBER));
-        
-        // TODO: 월요일부터 시작하도록 수정
 
-        LocalDate startDate = LocalDate.now().plusWeeks(weekIndex);
-        LocalDate endDate = startDate.plusDays(6); // One week later
+        LocalDate startDate = LocalDate.now()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .plusWeeks(weekIndex);
+        LocalDate endDate = startDate.plusDays(6); // 한 주 뒤의 날짜
 
         java.sql.Date start = convertToSqlDate(startDate);
         java.sql.Date end = convertToSqlDate(endDate);
 
         List<Menu> menuList = menuRepository.findAllByRestaurantAndMealDateBetween(restaurant, start, end);
         return menuList.stream()
-                .map(entity ->
-                    MenuResponseDto.toDto(entity)
-                )
+                .map(MenuResponseDto::toDto)
+                .sorted(Comparator.comparing(MenuResponseDto::getMealDate))
                 .collect(Collectors.toList());
+
     }
 
-    public boolean createMenu(MenuRequestDto menuDto) {
-        menuRepository.save(convertToEntity(menuDto));
+    public boolean createMenu(MenuRequestDto menuDto, long ownerId) {
+        Restaurant restaurant = ownerRepository.findOwnerById(ownerId).get().getRestaurant();
+        Menu menu = convertToEntity(menuDto);
+        menu.setRestaurant(restaurant);
+        menuRepository.save(menu);
         return true;
     }
 
@@ -79,7 +85,6 @@ public class MenuService {
                 .mainMenu(menuDto.getMainMenuAsString())
                 .subMenu(menuDto.getSubMenuAsString())
                 .mealType(menuDto.getMealType())
-                .restaurant(menuDto.getRestaurant())
                 .mealDate(menuDto.getMealDate())
                 .build();
     }

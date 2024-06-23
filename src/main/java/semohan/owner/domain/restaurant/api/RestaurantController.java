@@ -29,7 +29,7 @@ public class RestaurantController {
     }
 
     @PostMapping(value = "/updateInfo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> updateRestaurantInfo(HttpServletRequest request, @Valid @RequestPart RestaurantInfoUpdateDto restaurantInfoUpdateDto, BindingResult bindingResult, @RequestPart MultipartFile imageFile) {
+    public ResponseEntity<Boolean> updateRestaurantInfo(HttpServletRequest request, @Valid @RequestPart RestaurantInfoUpdateDto restaurantInfoUpdateDto, BindingResult bindingResult, @RequestPart(required = false) MultipartFile imageFile) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(ErrorCode.INVALID_FORM_DATA, bindingResult.getFieldErrors().get(0).getDefaultMessage());
         } else {
