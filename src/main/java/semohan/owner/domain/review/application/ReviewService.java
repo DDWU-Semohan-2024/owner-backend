@@ -17,10 +17,7 @@ import semohan.owner.global.exception.CustomException;
 import semohan.owner.global.exception.ErrorCode;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -145,7 +142,10 @@ public class ReviewService {
             // 선호도 계산 ( 좋아요 수 / 총 리뷰 수)
             double preference = (reviewsCount > 0) ? (double) likesCount / reviewsCount * 100 : 0;
 
-            WeeklyStatsDto statsDto = new WeeklyStatsDto(menu.getMainMenu(), reviewsCount, likesCount, (int) preference);
+            // '|'로 구분된 메뉴를 리스트로 변환
+            List<String> menuList = Arrays.asList(menu.getMainMenu().split("\\|"));
+
+            WeeklyStatsDto statsDto = new WeeklyStatsDto(menuList, reviewsCount, likesCount, (int) preference);
             weeklyStats.add(statsDto);
         }
 

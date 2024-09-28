@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeeklyStatsDto {
 
-    private String mainMenu; // '|'로 구분된 문자열
+    private List<String> mainMenu;
 
     private int reviewCount;
 
