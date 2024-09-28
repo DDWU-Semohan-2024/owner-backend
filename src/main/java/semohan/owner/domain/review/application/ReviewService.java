@@ -11,6 +11,7 @@ import semohan.owner.domain.restaurant.domain.Restaurant;
 import semohan.owner.domain.review.domain.Review;
 import semohan.owner.domain.review.dto.ReviewViewDto;
 import semohan.owner.domain.review.dto.Top3MenuDto;
+import semohan.owner.domain.review.dto.WeeklyStatsDto;
 import semohan.owner.domain.review.repository.ReviewRepository;
 import semohan.owner.global.exception.CustomException;
 import semohan.owner.global.exception.ErrorCode;
@@ -122,5 +123,32 @@ public class ReviewService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<WeeklyStatsDto> getWeeklyMainMenu(long ownerId) {
+        Restaurant restaurant = ownerRepository.findOwnerById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED_USER)).getRestaurant();
+
+        LocalDate today = LocalDate.now();
+        LocalDate oneWeekAgo = today.minusDays(7);
+
+        java.sql.Date start = convertToSqlDate(oneWeekAgo);
+        java.sql.Date end = convertToSqlDate(today);
+
+        List<Menu> menus = menuRepository.findAllByRestaurantAndMealDateBetween(restaurant, start, end);
+
+        List<WeeklyStatsDto> weeklyStats = new ArrayList<>();
+
+        for (Menu menu : menus) {
+            int reviewsCount = reviewRepository.countByMenu(menu); // 메뉴에 대한 리뷰 수
+            int likesCount = menu.getLikesMenu(); // 메뉴의 좋아요 개수 가져오기
+
+            // 선호도 계산 ( 좋아요 수 / 총 리뷰 수)
+            double preference = (reviewsCount > 0) ? (double) likesCount / reviewsCount * 100 : 0;
+
+            WeeklyStatsDto statsDto = new WeeklyStatsDto(menu.getMainMenu(), reviewsCount, likesCount, (int) preference);
+            weeklyStats.add(statsDto);
+        }
+
+        return weeklyStats;
     }
 }

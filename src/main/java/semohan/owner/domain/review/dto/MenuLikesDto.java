@@ -13,5 +13,6 @@ import java.time.LocalDate;
 public class MenuLikesDto {
 
     private LocalDate date;
+
     private int preference;
 }

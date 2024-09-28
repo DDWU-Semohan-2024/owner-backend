@@ -9,9 +9,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Top3MenuDto {
+public class WeeklyStatsDto {
 
-    private String menuName;
+    private String mainMenu; // '|'로 구분된 문자열
 
-    private double percentage;
+    private int reviewCount;
+
+    private int likesMenu;
+
+    private int preference;
 }

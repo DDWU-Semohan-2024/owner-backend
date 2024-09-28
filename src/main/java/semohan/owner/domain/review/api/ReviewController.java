@@ -8,6 +8,7 @@ import semohan.owner.domain.review.dto.MenuLikesDto;
 import semohan.owner.domain.review.application.ReviewService;
 import semohan.owner.domain.review.dto.ReviewViewDto;
 import semohan.owner.domain.review.dto.Top3MenuDto;
+import semohan.owner.domain.review.dto.WeeklyStatsDto;
 
 import java.util.List;
 
@@ -33,5 +34,11 @@ public class ReviewController {
     public ResponseEntity<List<Top3MenuDto>> getTop3LikedMenus(HttpServletRequest request) {
         long ownerId = (Long) request.getSession().getAttribute("id");
         return ResponseEntity.ok(reviewService.getTop3LikedMenus(ownerId));
+    }
+
+    @GetMapping("/table-graph")
+    public ResponseEntity<List<WeeklyStatsDto>> getWeeklyMainMenu(HttpServletRequest request) {
+        long ownerId = (Long) request.getSession().getAttribute("id");
+        return ResponseEntity.ok(reviewService.getWeeklyMainMenu(ownerId));
     }
 }
