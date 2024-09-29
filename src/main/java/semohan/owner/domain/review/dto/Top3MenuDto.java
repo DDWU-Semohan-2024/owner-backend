@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuLikesDto {
+public class Top3MenuDto {
 
-    private LocalDate date;
+    private String menuName;
 
-    private int preference;
+    private double percentage;
 }

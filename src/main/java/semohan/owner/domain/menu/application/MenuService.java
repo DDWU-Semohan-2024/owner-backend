@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final RestaurantRepository restaurantRepository;
-    private OwnerRepository ownerRepository;
+    private final OwnerRepository ownerRepository;
 
     public MenuResponseDto getMenu(long id) {
         return MenuResponseDto.toDto(menuRepository.findMenuById(id).get());

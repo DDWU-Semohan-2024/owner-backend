@@ -5,14 +5,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuLikesDto {
+public class WeeklyStatsDto {
 
-    private LocalDate date;
+    private List<String> mainMenu;
+
+    private int reviewCount;
+
+    private int likesMenu;
 
     private int preference;
 }
