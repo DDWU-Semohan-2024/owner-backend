@@ -16,6 +16,9 @@ public class Owner {
     private long id;
 
     @NotNull
+    private String role;
+
+    @NotNull
     private String username;
 
     @NotNull

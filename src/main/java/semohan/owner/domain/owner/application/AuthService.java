@@ -2,14 +2,15 @@ package semohan.owner.domain.owner.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
-import semohan.owner.domain.owner.dto.TemporaryPasswordRequestDto;
-import semohan.owner.domain.owner.dto.SignInDto;
-import semohan.owner.domain.owner.dto.FindIdVerificationDto;
-import semohan.owner.domain.owner.dto.TemporaryPasswordVerificationDto;
+import semohan.owner.domain.owner.dto.*;
 import semohan.owner.domain.owner.repository.OwnerRepository;
+import semohan.owner.global.auth.JwtTokenProvider;
 import semohan.owner.global.exception.CustomException;
+
+import java.util.ArrayList;
 
 import static semohan.owner.global.exception.ErrorCode.*;
 
@@ -23,17 +24,25 @@ public class AuthService {
     private final ValidationService validationService;
     private final RedisService redisService;
 
-    public long signIn(SignInDto signInDto) {
+    @Autowired
+    public JwtTokenProvider jwtTokenProvider;
+
+    public TokenDto signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
         Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername())
                 .orElseThrow(() -> new CustomException(INVALID_MEMBER));
-
 
         // 비밀번호 확인
         if(!signInDto.getPassword().equals(owner.getPassword())) {
             throw new CustomException(INVALID_MEMBER);
         }
-        return owner.getId();
+
+        // jwt 토큰 생성
+        // TODO: 나중에 UID로 수정
+        ArrayList<String> roles = new ArrayList();
+        roles.add(owner.getRole());
+
+        return new TokenDto(owner.getId(), jwtTokenProvider.createToken(String.valueOf(owner.getId()), roles));
     }
 
     public boolean sendVerifySms(String phoneNumber) {

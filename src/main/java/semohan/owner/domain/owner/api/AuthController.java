@@ -9,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import semohan.owner.domain.owner.application.AuthService;
-import semohan.owner.domain.owner.dto.TemporaryPasswordRequestDto;
-import semohan.owner.domain.owner.dto.SignInDto;
-import semohan.owner.domain.owner.dto.FindIdVerificationDto;
-import semohan.owner.domain.owner.dto.TemporaryPasswordVerificationDto;
+import semohan.owner.domain.owner.application.CustomUserDetailService;
+import semohan.owner.domain.owner.dto.*;
 
 @Slf4j
 @RestController
@@ -21,12 +19,19 @@ import semohan.owner.domain.owner.dto.TemporaryPasswordVerificationDto;
 public class AuthController {
 
     private final AuthService authService;
+    private final CustomUserDetailService customUserDetailService;
 
     @PostMapping(value = "/sign-in")
-    public ResponseEntity<Boolean> signIn(@RequestBody SignInDto signInDto, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<String> signIn(@RequestBody SignInDto signInDto, HttpServletRequest httpServletRequest) {
+        // TODO: jwt 적용
         HttpSession session = httpServletRequest.getSession(true);
-        session.setAttribute("id", authService.signIn(signInDto));
-        return ResponseEntity.ok(true);
+
+        TokenDto tokenDto = authService.signIn(signInDto);
+
+        session.setAttribute("token", tokenDto.getToken());
+        session.setAttribute("id", tokenDto.getId());
+
+        return ResponseEntity.ok(authService.signIn(signInDto).getToken());
     }
 
     @PostMapping(value = "/sign-out")
