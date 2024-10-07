@@ -2,6 +2,7 @@ package semohan.owner.domain.owner.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import semohan.owner.domain.owner.domain.Owner;
 import semohan.owner.domain.owner.dto.TemporaryPasswordRequestDto;
@@ -23,14 +24,16 @@ public class AuthService {
     private final ValidationService validationService;
     private final RedisService redisService;
 
+    // SHA-256, salt 사용해서 암호화, 비교 해주는 인스턴스
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
     public long signIn(SignInDto signInDto) {
         // username으로 owner 가져오기
         Owner owner = ownerRepository.findOwnerByUsername(signInDto.getUsername())
                 .orElseThrow(() -> new CustomException(INVALID_MEMBER));
 
-
-        // 비밀번호 확인
-        if(!signInDto.getPassword().equals(owner.getPassword())) {
+//        if(!signInDto.getPassword().equals(owner.getPassword())) {
+        if(!bCryptPasswordEncoder.matches(signInDto.getPassword(), owner.getPassword())) {
             throw new CustomException(INVALID_MEMBER);
         }
         return owner.getId();
@@ -103,7 +106,7 @@ public class AuthService {
             // 입력한 아이디로 찾은 owner의 휴대전화 번호와 입력한 휴대전화 번호가 일치하는지 확인
             if (owner.getPhoneNumber().equals(request.getPhoneNumber())) {
                 String tempPassword = validationService.createTemporaryPassword();  // 임시 패스워드 생성
-                owner.setPassword(tempPassword);
+                owner.setPassword(bCryptPasswordEncoder.encode(tempPassword));
                 ownerRepository.save(owner); // 변경된 비밀번호 저장
 
                 //수신번호 형태에 맞춰 "-"을 ""로 변환
