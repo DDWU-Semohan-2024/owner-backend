@@ -41,4 +41,9 @@ public class ReviewController {
         long ownerId = (Long) request.getSession().getAttribute("id");
         return ResponseEntity.ok(reviewService.getWeeklyMainMenu(ownerId));
     }
+
+    @GetMapping("/top3")
+    public ResponseEntity<List<String>> getWeeklyTop3Menus() {
+        return ResponseEntity.ok(reviewService.getWeeklyTop3Menus());
+    }
 }

@@ -151,4 +151,39 @@ public class ReviewService {
 
         return weeklyStats;
     }
+
+    public List<String> getWeeklyTop3Menus() {
+        LocalDate today = LocalDate.now();
+        LocalDate oneWeekAgo = today.minusDays(7);
+
+        java.sql.Date start = convertToSqlDate(oneWeekAgo);
+        java.sql.Date end = convertToSqlDate(today);
+
+        // 일주일간 등록된 모든 메뉴를 가져옴
+        List<Menu> allMenus = menuRepository.findAllByMealDateBetween(start, end);
+
+        // 메뉴명과 그에 대한 좋아요 개수를 저장할 Map
+        Map<String, Integer> menuLikesMap = new HashMap<>();
+
+        for (Menu menu : allMenus) {
+            // 메뉴를 '|'로 분리
+            String[] mainMenus = menu.getMainMenu().split("\\|");
+
+            // 각 서브메뉴의 좋아요 개수를 가져옴
+            int likesCount = menu.getLikesMenu();
+
+            // 서브 메뉴별로 좋아요를 분리해서 저장
+            for (String mainMenu : mainMenus) {
+                menuLikesMap.put(mainMenu, menuLikesMap.getOrDefault(mainMenu, 0) + likesCount);
+            }
+        }
+
+        // 좋아요가 많은 상위 3개의 메뉴를 바로 반환
+        return menuLikesMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()) // 좋아요 수 기준 내림차순 정렬
+                .limit(3) // 상위 3개만 선택
+                .map(Map.Entry::getKey) // 메뉴 이름만 가져옴
+                .collect(Collectors.toList());
+    }
 }
