@@ -46,7 +46,7 @@ public class AuthService {
         ArrayList<String> roles = new ArrayList();
         roles.add(owner.getRole());
 
-        return new TokenDto(owner.getId(), jwtTokenProvider.createToken(String.valueOf(owner.getId()), roles));
+        return new TokenDto(owner.getId(), jwtTokenProvider.createToken(owner.getUsername(), roles));
     }
 
     public boolean sendVerifySms(String phoneNumber) {

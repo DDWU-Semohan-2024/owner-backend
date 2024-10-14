@@ -20,6 +20,11 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        // 원래는 userId를 보내는게 맞지만... 우선 long type의 id로...
+//        Owner owner = ownerRepository.findOwnerById(Long.getLong(id)).get();
+
+        // username으로 다시 변경
         Owner owner = ownerRepository.findOwnerByUsername(username).get();
 
         if(owner != null) {

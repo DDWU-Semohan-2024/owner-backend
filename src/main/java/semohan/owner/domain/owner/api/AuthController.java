@@ -22,16 +22,12 @@ public class AuthController {
     private final CustomUserDetailService customUserDetailService;
 
     @PostMapping(value = "/sign-in")
-    public ResponseEntity<String> signIn(@RequestBody SignInDto signInDto, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<TokenDto> signIn(@RequestBody SignInDto signInDto, HttpServletRequest httpServletRequest) {
         // TODO: jwt 적용
         HttpSession session = httpServletRequest.getSession(true);
-
         TokenDto tokenDto = authService.signIn(signInDto);
-
-        session.setAttribute("token", tokenDto.getToken());
         session.setAttribute("id", tokenDto.getId());
-
-        return ResponseEntity.ok(authService.signIn(signInDto).getToken());
+        return ResponseEntity.ok(tokenDto);
     }
 
     @PostMapping(value = "/sign-out")

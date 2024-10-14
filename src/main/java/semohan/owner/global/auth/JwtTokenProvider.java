@@ -41,9 +41,9 @@ public class JwtTokenProvider {
         LOGGER.info("[init] JwtTokenProvider 내 SecretKey 초기화 완료");
     }
 
-    public String createToken(String userUid, List<String> roles){
+    public String createToken(String username, List<String> roles){
         LOGGER.info("[createToken] 토큰 생성 시작");
-        Claims claims = Jwts.claims().setSubject(userUid);
+        Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", roles);
         Date now = new Date();
 
