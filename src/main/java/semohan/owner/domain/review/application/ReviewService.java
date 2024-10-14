@@ -16,6 +16,7 @@ import semohan.owner.domain.review.repository.ReviewRepository;
 import semohan.owner.global.exception.CustomException;
 import semohan.owner.global.exception.ErrorCode;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,46 +39,68 @@ public class ReviewService {
         return reviews.stream().map(ReviewViewDto::toDto).collect(Collectors.toList());
     }
 
-    public List<MenuLikesDto> getWeeklyLikesAndReviews(long ownerId) {
-        Restaurant restaurant = ownerRepository.findOwnerById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED_USER)).getRestaurant();
+    public Map<String, List<MenuLikesDto>> getWeeklyLikesAndReviews(long ownerId, int weekOffset) {
+        Restaurant restaurant = ownerRepository.findOwnerById(ownerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED_USER))
+                .getRestaurant();
 
-        LocalDate today = LocalDate.now();
-        LocalDate oneWeekAgo = today.minusDays(7);
+        // 현재 날짜로부터 weekOffset(전 주 -1, 이번 주 0, 다음 주 1)만큼 이전/이후 주로 이동
+        LocalDate today = LocalDate.now().plusWeeks(weekOffset);
 
-        java.sql.Date start = convertToSqlDate(oneWeekAgo);
-        java.sql.Date end = convertToSqlDate(today);
+        // 해당 주의 월요일과 일요일 계산
+        LocalDate monday = today.with(DayOfWeek.MONDAY);
+        LocalDate sunday = today.with(DayOfWeek.SUNDAY);
+
+        java.sql.Date start = convertToSqlDate(monday);
+        java.sql.Date end = convertToSqlDate(sunday);
 
         List<Menu> menuList = menuRepository.findAllByRestaurantAndMealDateBetween(restaurant, start, end);
 
-        // 결과 담을 리스트
-        List<MenuLikesDto> result = new ArrayList<>();
+        // 결과를 담을 Map 생성 (한글 요일을 key로 사용)
+        Map<String, List<MenuLikesDto>> resultMap = new HashMap<>();
+
+        // 요일 변환용 배열
+        String[] koreanDays = {"월", "화", "수", "목", "금", "토", "일"};
+
+        // 각 요일에 해당하는 빈 리스트를 미리 초기화
+        for (String day : koreanDays) {
+            resultMap.put(day, new ArrayList<>());
+        }
 
         // 각 메뉴에 대해 좋아요 수와 리뷰 수 계산
         for (Menu menu : menuList) {
-            int likesCount = menu.getLikesMenu(); // 메뉴에 대한 좋아요 수
-            int reviewsCount = reviewRepository.countByMenu(menu); // 메뉴에 대한 리뷰 수
+            int likesCount = menu.getLikesMenu();
+            int reviewsCount = reviewRepository.countByMenu(menu);
 
             LocalDate mealDate = new java.sql.Date(menu.getMealDate().getTime()).toLocalDate();
+            DayOfWeek dayOfWeek = mealDate.getDayOfWeek(); // 요일 가져오기
+            String koreanDay = koreanDays[dayOfWeek.getValue() - 1]; // 한글 요일 변환
 
-            // 리뷰 수가 0일 경우 나누기 에러를 방지
             double ratio = (reviewsCount != 0) ? (double) likesCount / reviewsCount * 100 : 0;
 
-            // DTO에 담아 결과 리스트에 추가
-            result.add(new MenuLikesDto(mealDate, (int) ratio));
+            // 한글 요일에 맞는 리스트에 MenuLikesDto 추가
+            resultMap.get(koreanDay).add(new MenuLikesDto(mealDate, (int) ratio));
         }
 
-        return result;
+        return resultMap;
     }
 
-    public List<Top3MenuDto> getTop3LikedMenus(long ownerId) {
-        Restaurant restaurant = ownerRepository.findOwnerById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED_USER)).getRestaurant();
+    public List<Top3MenuDto> getTop3LikedMenus(long ownerId, int weekOffset) {
+        Restaurant restaurant = ownerRepository.findOwnerById(ownerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED_USER))
+                .getRestaurant();
 
-        LocalDate today = LocalDate.now();
-        LocalDate oneWeekAgo = today.minusDays(7);
+        // 현재 날짜로부터 weekOffset(전 주 -1, 이번 주 0, 다음 주 1)만큼 이전/이후 주로 이동
+        LocalDate today = LocalDate.now().plusWeeks(weekOffset);
 
-        java.sql.Date start = convertToSqlDate(oneWeekAgo);
-        java.sql.Date end = convertToSqlDate(today);
+        // 해당 주의 월요일과 일요일 계산
+        LocalDate monday = today.with(DayOfWeek.MONDAY);
+        LocalDate sunday = today.with(DayOfWeek.SUNDAY);
 
+        java.sql.Date start = convertToSqlDate(monday);
+        java.sql.Date end = convertToSqlDate(sunday);
+
+        // 해당 주간의 메뉴 목록 가져오기
         List<Menu> menus = menuRepository.findAllByRestaurantAndMealDateBetween(restaurant, start, end);
 
         // 각 메뉴의 좋아요 수를 계산하기 위해 mainMenu 필드 분리
@@ -122,22 +145,39 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public List<WeeklyStatsDto> getWeeklyMainMenu(long ownerId) {
+    public Map<String, List<WeeklyStatsDto>> getWeeklyMainMenu(long ownerId, int weekOffset) {
         Restaurant restaurant = ownerRepository.findOwnerById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED_USER)).getRestaurant();
 
-        LocalDate today = LocalDate.now();
-        LocalDate oneWeekAgo = today.minusDays(7);
+        // 현재 날짜로부터 weekOffset(전 주 -1, 이번 주 0, 다음 주 1)만큼 이전/이후 주로 이동
+        LocalDate today = LocalDate.now().plusWeeks(weekOffset);
 
-        java.sql.Date start = convertToSqlDate(oneWeekAgo);
-        java.sql.Date end = convertToSqlDate(today);
+        // 해당 주의 월요일과 일요일 계산
+        LocalDate monday = today.with(DayOfWeek.MONDAY);
+        LocalDate sunday = today.with(DayOfWeek.SUNDAY);
+
+        java.sql.Date start = convertToSqlDate(monday);
+        java.sql.Date end = convertToSqlDate(sunday);
 
         List<Menu> menus = menuRepository.findAllByRestaurantAndMealDateBetween(restaurant, start, end);
 
-        List<WeeklyStatsDto> weeklyStats = new ArrayList<>();
+        // 결과를 담을 Map 생성 (한글 요일을 key로 사용)
+        Map<String, List<WeeklyStatsDto>> resultMap = new HashMap<>();
+
+        // 요일 변환용 배열
+        String[] koreanDays = {"월", "화", "수", "목", "금", "토", "일"};
+
+        // 각 요일에 해당하는 빈 리스트를 미리 초기화
+        for (String day : koreanDays) {
+            resultMap.put(day, new ArrayList<>());
+        }
 
         for (Menu menu : menus) {
             int reviewsCount = reviewRepository.countByMenu(menu); // 메뉴에 대한 리뷰 수
             int likesCount = menu.getLikesMenu(); // 메뉴의 좋아요 개수 가져오기
+
+            LocalDate mealDate = new java.sql.Date(menu.getMealDate().getTime()).toLocalDate();
+            DayOfWeek dayOfWeek = mealDate.getDayOfWeek(); // 요일 가져오기
+            String koreanDay = koreanDays[dayOfWeek.getValue() - 1]; // 한글 요일 변환
 
             // 선호도 계산 ( 좋아요 수 / 총 리뷰 수)
             double preference = (reviewsCount > 0) ? (double) likesCount / reviewsCount * 100 : 0;
@@ -146,18 +186,22 @@ public class ReviewService {
             List<String> menuList = Arrays.asList(menu.getMainMenu().split("\\|"));
 
             WeeklyStatsDto statsDto = new WeeklyStatsDto(menuList, reviewsCount, likesCount, (int) preference);
-            weeklyStats.add(statsDto);
+            // 한글 요일에 맞는 리스트에 MenuLikesDto 추가
+            resultMap.get(koreanDay).add(statsDto);
         }
 
-        return weeklyStats;
+        return resultMap;
     }
 
     public List<String> getWeeklyTop3Menus() {
-        LocalDate today = LocalDate.now();
-        LocalDate oneWeekAgo = today.minusDays(7);
+        LocalDate lastWeek = LocalDate.now().plusWeeks(-1);
 
-        java.sql.Date start = convertToSqlDate(oneWeekAgo);
-        java.sql.Date end = convertToSqlDate(today);
+        // 해당 주의 월요일과 일요일 계산
+        LocalDate monday = lastWeek.with(DayOfWeek.MONDAY);
+        LocalDate sunday = lastWeek.with(DayOfWeek.SUNDAY);
+
+        java.sql.Date start = convertToSqlDate(monday);
+        java.sql.Date end = convertToSqlDate(sunday);
 
         // 일주일간 등록된 모든 메뉴를 가져옴
         List<Menu> allMenus = menuRepository.findAllByMealDateBetween(start, end);
@@ -169,10 +213,10 @@ public class ReviewService {
             // 메뉴를 '|'로 분리
             String[] mainMenus = menu.getMainMenu().split("\\|");
 
-            // 각 서브메뉴의 좋아요 개수를 가져옴
+            // 각 메인 메뉴의 좋아요 개수를 가져옴
             int likesCount = menu.getLikesMenu();
 
-            // 서브 메뉴별로 좋아요를 분리해서 저장
+            // 메인 메뉴별로 좋아요를 분리해서 저장
             for (String mainMenu : mainMenus) {
                 menuLikesMap.put(mainMenu, menuLikesMap.getOrDefault(mainMenu, 0) + likesCount);
             }
