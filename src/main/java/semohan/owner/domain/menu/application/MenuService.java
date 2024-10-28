@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final RestaurantRepository restaurantRepository;
     private final OwnerRepository ownerRepository;
 
     public MenuResponseDto getMenu(long id) {
@@ -39,7 +38,7 @@ public class MenuService {
 
     // 오늘: 0 / 전주: -1 / 다음주: 1
     public List<MenuResponseDto> getMenuList(long ownerId, int weekIndex) {
-        Restaurant restaurant = restaurantRepository.findRestaurantById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_MEMBER));
+        Restaurant restaurant = ownerRepository.findOwnerById(ownerId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_MEMBER)).getRestaurant();
 
         LocalDate startDate = LocalDate.now()
                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
