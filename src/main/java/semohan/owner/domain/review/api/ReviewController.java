@@ -11,6 +11,7 @@ import semohan.owner.domain.review.dto.Top3MenuDto;
 import semohan.owner.domain.review.dto.WeeklyStatsDto;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,22 +25,22 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getMyReviews(ownerId));
     }
 
-    @GetMapping(value = "/line-graph")
-    public ResponseEntity<List<MenuLikesDto>> getWeeklyLikesAndReviews(HttpServletRequest request) {
+    @GetMapping(value = "/line-graph/{weekIndex}")
+    public ResponseEntity<Map<String, List<MenuLikesDto>>>  getWeeklyLikesAndReviews(HttpServletRequest request, @PathVariable("weekIndex") String index) {
         long ownerId = (Long) request.getSession().getAttribute("id");
-        return ResponseEntity.ok(reviewService.getWeeklyLikesAndReviews(ownerId));
+        return ResponseEntity.ok(reviewService.getWeeklyLikesAndReviews(ownerId, Integer.parseInt(index)));
     }
 
-    @GetMapping("/pie-chart")
-    public ResponseEntity<List<Top3MenuDto>> getTop3LikedMenus(HttpServletRequest request) {
+    @GetMapping("/pie-chart/{weekIndex}")
+    public ResponseEntity<List<Top3MenuDto>> getTop3LikedMenus(HttpServletRequest request, @PathVariable("weekIndex") String index) {
         long ownerId = (Long) request.getSession().getAttribute("id");
-        return ResponseEntity.ok(reviewService.getTop3LikedMenus(ownerId));
+        return ResponseEntity.ok(reviewService.getTop3LikedMenus(ownerId, Integer.parseInt(index)));
     }
 
-    @GetMapping("/table-graph")
-    public ResponseEntity<List<WeeklyStatsDto>> getWeeklyMainMenu(HttpServletRequest request) {
+    @GetMapping("/table-graph/{weekIndex}")
+    public ResponseEntity<Map<String, List<WeeklyStatsDto>>> getWeeklyMainMenu(HttpServletRequest request, @PathVariable("weekIndex") String index) {
         long ownerId = (Long) request.getSession().getAttribute("id");
-        return ResponseEntity.ok(reviewService.getWeeklyMainMenu(ownerId));
+        return ResponseEntity.ok(reviewService.getWeeklyMainMenu(ownerId, Integer.parseInt(index)));
     }
 
     @GetMapping("/top3")
